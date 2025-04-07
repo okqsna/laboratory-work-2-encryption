@@ -19,6 +19,7 @@ def is_prime_num(n):
             return False
     return True
 
+
 def rsa_algorithm(num_1, num_2):
     """
     Algorithm for generation of keys
@@ -26,6 +27,7 @@ def rsa_algorithm(num_1, num_2):
 
     # generation of random prime numbers
     prime_numbers = [i for i in range(num_1, num_2) if is_prime_num(i)]
+    print(prime_numbers)
     number_one, number_two = random.sample(prime_numbers, 2)
 
     # RSA algorithm start
@@ -42,4 +44,4 @@ def rsa_algorithm(num_1, num_2):
     d = pow(e, -1, euler_function)
     return [public_key_part_one, e, d]
 
-# print(rsa_algorithm(100, 300))
+# print(rsa_algorithm(10000, 30000))
