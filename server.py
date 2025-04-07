@@ -56,5 +56,5 @@ class Server:
                     client.send(msg)
 
 if __name__ == "__main__":
-    s = Server(9001)
+    s = Server(4000)
     s.start()
