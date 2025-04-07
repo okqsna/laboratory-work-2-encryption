@@ -2,31 +2,38 @@
 Generation of secret and public keys 
 with RSA algorithm
 """
-
-
 import random
 import math
 
 
-def is_prime_num(n):
+
+def find_prime(n: int) -> list:
     """
-    Checking if number is prime
+    Generating all prime numbers with Eratosthenes sieve
+
+    :param n: int, amount of numbers from which we generate prime numbers
+    :return: list, primes number
     """
-    if n == 0 or n == 1 or n < 0:
-        return False
-    for i in range(2, int(n ** 0.5) + 1):
-        if (n % i) == 0:
-            return False
-    return True
+    all_primes = [True] * n
+    all_primes[0], all_primes[1] = False, False
+
+    for i in range(2, math.isqrt(n)):
+        if all_primes[i]:
+            for j in range(i**2, n, i):
+                all_primes[j] = False
+
+    return [i for i in range(n) if all_primes[i]]
 
 
-def rsa_algorithm(num_1, num_2):
+def rsa_algorithm(num_1):
     """
     Algorithm for generation of keys
+
+    :param num_1: int, amount of numbers from which we generate prime numbers
     """
 
     # generation of random prime numbers
-    prime_numbers = [i for i in range(num_1, num_2) if is_prime_num(i)]
+    prime_numbers = find_prime(num_1)
     print(prime_numbers)
     number_one, number_two = random.sample(prime_numbers, 2)
 
@@ -47,4 +54,4 @@ def rsa_algorithm(num_1, num_2):
     return {'public_key': public_key_part_one, 'public_key_part_one': public_key_part_one,\
             'secret_key': d, 'euler function': euler_function}
 
-# print(rsa_algorithm(10000, 30000))
+# print(rsa_algorithm(189300))
