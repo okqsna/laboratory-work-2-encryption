@@ -41,7 +41,9 @@ def rsa_algorithm(num_1, num_2):
             e = i
             break
 
+    # secret key generation
     d = pow(e, -1, euler_function)
+
     return {'public_key': public_key_part_one, 'public_key_part_one': public_key_part_one,\
             'secret_key': d, 'euler function': euler_function}
 
