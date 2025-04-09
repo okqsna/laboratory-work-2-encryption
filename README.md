@@ -3,9 +3,9 @@
 fast exponentiation algorithm in modular arithmetic.
 
 ### RSA algorithm <br>
-
-
-
+In the implementation of the algorithm we used such libraries:
+- <b>Math</b> - for calculations
+- <b>Secrets</b> - for generation of 2064-bits prime numbers
 
 
 
