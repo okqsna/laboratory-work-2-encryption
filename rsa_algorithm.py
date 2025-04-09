@@ -49,7 +49,7 @@ def rsa_algorithm():
     # secret key generation
     d = pow(e, -1, euler_function)
 
-    return {'public_key': public_key_part_one, 'public_key_part_one': public_key_part_one,\
-            'secret_key': d, 'euler function': euler_function}
+    return {'public_key': public_key_part_one, 'n': public_key_part_one,\
+            'secret_key_d': d, 'euler function': euler_function}
 
 print(rsa_algorithm())
