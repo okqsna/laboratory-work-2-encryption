@@ -52,4 +52,3 @@ def rsa_algorithm():
     return {'public_key': public_key_part_one, 'n': public_key_part_one,\
             'secret_key_d': d, 'euler function': euler_function}
 
-print(rsa_algorithm())
