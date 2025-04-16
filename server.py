@@ -1,5 +1,7 @@
 import socket
 import threading
+from rsa_algorithm import rsa_algorithm
+
 
 class Server:
 
@@ -7,6 +9,7 @@ class Server:
         self.host = '127.0.0.1'
         self.port = port
         self.clients = []
+        self.clients_keys = {}
         self.username_lookup = {}
         self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 
@@ -15,31 +18,35 @@ class Server:
         self.s.listen(100)
 
         # generate keys ...
+        public_key = rsa_algorithm()['public_key']
+        secret_key = rsa_algorithm()['secret_key_d']
 
         while True:
             c, addr = self.s.accept()
             username = c.recv(1024).decode()
+            client_key = c.recv(2048).decode()
             print(f"{username} tries to connect")
             self.broadcast(f'new person has joined: {username}')
             self.username_lookup[c] = username
             self.clients.append(c)
+            print(f"connected with {addr}")
 
-            # send public key to the client 
-
+            # send public key to the client
+            c.send(str(public_key).encode())
             # ...
 
             # encrypt the secret with the clients public key
 
             # ...
 
-            # send the encrypted secret to a client 
+            # send the encrypted secret to a client
 
             # ...
 
             threading.Thread(target=self.handle_client,args=(c,addr,)).start()
 
     def broadcast(self, msg: str):
-        for client in self.clients: 
+        for client in self.clients:
 
             # encrypt the message
 
@@ -56,5 +63,5 @@ class Server:
                     client.send(msg)
 
 if __name__ == "__main__":
-    s = Server(9001)
+    s = Server(6000)
     s.start()
