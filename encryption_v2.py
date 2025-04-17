@@ -50,7 +50,7 @@ def max_block_length(n):
     return k
 
 
-n_p, secret_key, euler = 3551, 1817, 17
-block_decr = encryption('hello world', n_p, euler)
-res = decrypt(block_decr, secret_key, n_p)
-print(res)
+# n_p, secret_key, euler = 3551, 1817, 17
+# block_decr = encryption('hello world', n_p, euler)
+# res = decrypt(block_decr, secret_key, n_p)
+# print(res)
