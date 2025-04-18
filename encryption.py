@@ -2,7 +2,7 @@
 Block encryption and decryption
 """
 
-def encryption(word, n, e):
+def encrypt(word, n, e):
     """
     Encrypting the message
 
@@ -41,12 +41,15 @@ def decrypt(blocks, d, n):
         result += chr(int(lst[i:i+block_length]))
     return result
 
-def max_block_length(n):
+def max_block_length(n) -> int:
     """
     Finding the max length of a block
+    for coding
+
+    :param n: int, public key
+    :return: int, amount of blocks needed for coding
     """
     k = 1
     while 10 ** k < n:
         k += 1
     return k
-

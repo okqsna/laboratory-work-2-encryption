@@ -34,4 +34,4 @@ def rsa_algorithm() -> dict:
     d = pow(e, -1, euler_function)
 
     return {'n': public_key_part_one,\
-            'secret_key_d': d, 'euler function': e}
+            'secret_key_d': d, 'euler_function': e}

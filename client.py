@@ -1,6 +1,8 @@
 import socket
 import threading
 from rsa_algorithm import rsa_algorithm
+from hashing import hash_message, check_message_integrity
+from encryption import encrypt, decrypt
 
 class Client:
     def __init__(self, server_ip: str, port: int, username: str) -> None:

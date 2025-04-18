@@ -1,9 +1,16 @@
+"""
+Server part of a messenger
+"""
 import socket
 import threading
 from rsa_algorithm import rsa_algorithm
-
+from hashing import hash_message, check_message_integrity
+from encryption import encrypt, decrypt
 
 class Server:
+    """
+    Class object for server
+    """
 
     def __init__(self, port: int) -> None:
         self.host = '127.0.0.1'
@@ -18,8 +25,10 @@ class Server:
         self.s.listen(100)
 
         # generate keys ...
-        public_key = rsa_algorithm()['public_key']
-        secret_key = rsa_algorithm()['secret_key_d']
+        rsa = rsa_algorithm()
+        public_key = rsa['n']
+        secret_key = rsa['secret_key_d']
+        euler_func = rsa['euler_function']
 
         while True:
             c, addr = self.s.accept()
