@@ -52,7 +52,7 @@ class Client:
         server_key = self.s.recv(2048).decode()
         decoded_server_key = server_key[1:-1].split(',')
         self.server_public_n = int(decoded_server_key[0].strip())
-        self.server_public_e = int(decoded_server_key[0].strip())
+        self.server_public_e = int(decoded_server_key[1].strip())
 
         threading.Thread(target=self.read_handler).start()
         threading.Thread(target=self.write_handler).start()
