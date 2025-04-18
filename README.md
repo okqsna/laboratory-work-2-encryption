@@ -6,11 +6,11 @@ fast exponentiation algorithm in modular arithmetic.
 `rsa_algorithm.py`
 In the implementation of the algorithm, we used such libraries:
 - <b>Math</b> - for calculations
-- <b>Secrets</b> - for generation of 1024-bits prime numbers
-- <b>Sumpy</b> - for generation of 1024-bits prime numbers
+- <b>Secrets</b> - for generation of 2048-bits prime numbers
+- <b>Sumpy</b> - for generation of 2048-bits prime numbers
 - <b>Hashlib</b> - for generation of hash of a messages
 
-1. The algorithm starts by generating two 1024-bit prime numbers using the libraries.
+1. The algorithm starts by generating two 2048-bit prime numbers using the libraries.
 2. Then we calculate the first part of the public key by multiplying the previously found prime numbers.
 3. The next step is finding a small odd number whose gcd with (p-1)(q-1), where p and q are 1024-bit prime numbers, equals 1.
 4. And the last step is the calculation of the private key, which is an integer, the reciprocal of a small number modulo (p-1)(q-1)
