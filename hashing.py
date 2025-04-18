@@ -1,6 +1,5 @@
 """hashing and message integrity"""
 import hashlib
-# from encryption_v2 import encryption, decrypt
 
 def hash_message(word):
     """
@@ -16,12 +15,3 @@ def check_message_integrity(received_hash, decrypted):
     calculated_hash = hash_message(decrypted)
     return calculated_hash == received_hash
 
-# n_p, secret_key, euler = 3551, 1817, 17
-# MES = 'hello world'
-# encr = encryption(MES, n_p, euler)
-# decr = decrypt(encr, secret_key, n_p)
-
-# HASHED = hash_message(MES)
-# print(HASHED)
-
-# print(check_message_integrity(HASHED, decr))
