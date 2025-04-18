@@ -31,19 +31,6 @@ class Client:
         self.server_public_n = None
         self.server_public_e = None
 
-    @property
-    def s(self):
-        """
-        Function returns connection with socket
-        """
-        return self.s
-
-    @s.setter
-    def s(self, value):
-        """
-        Function sets connection with socket
-        """
-        self.s = value
 
     def init_connection(self):
         """
