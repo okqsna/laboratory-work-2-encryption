@@ -18,58 +18,69 @@ class Server:
         self.clients = []
         self.clients_keys = {}
         self.username_lookup = {}
-        self.s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        dct = rsa_algorithm()
+        self.server_public_key_n = dct['n']
+        self.secret_key = dct['secret_key_d']
+        self.server_public_key_e = dct['euler_function']
 
     def start(self):
+        """sending public keys to clients"""
         self.s.bind((self.host, self.port))
         self.s.listen(100)
 
-        # generate keys ...
-        rsa = rsa_algorithm()
-        public_key = rsa['n']
-        secret_key = rsa['secret_key_d']
-        euler_func = rsa['euler_function']
-
         while True:
-            c, addr = self.s.accept()
+            c, _ = self.s.accept()
             username = c.recv(1024).decode()
             client_key = c.recv(2048).decode()
+            client_public_n, client_public_e = eval(client_key)
             print(f"{username} tries to connect")
-            self.broadcast(f'new person has joined: {username}')
-            self.username_lookup[c] = username
             self.clients.append(c)
-            print(f"connected with {addr}")
+            self.clients_keys[c] = (client_public_n, client_public_e)
+            self.username_lookup[c] = username
 
-            # send public key to the client
-            c.send(str(public_key).encode())
-            # ...
+            # Send server's public key to client
+            c.send(str((self.server_public_key_n, self.server_public_key_e)).encode())
 
-            # encrypt the secret with the clients public key
+            threading.Thread(target=self.handle_client, args=(c,)).start()
 
-            # ...
-
-            # send the encrypted secret to a client
-
-            # ...
-
-            threading.Thread(target=self.handle_client,args=(c,addr,)).start()
-
-    def broadcast(self, msg: str):
-        for client in self.clients:
-
-            # encrypt the message
-
-            # ...
-
-            client.send(msg.encode())
-
-    def handle_client(self, c: socket, addr): 
+    def handle_client(self, c):
+        """receive message and decode"""
         while True:
-            msg = c.recv(1024)
+            try:
+                msg = c.recv(2048).decode()
+                if msg:
+                    print(f"[server]: Received message from {self.username_lookup[c]}: {msg}")
+                    encr_str, received_hash = msg.split("/")
+                    encr_blocks = list(map(int, encr_str.split(",")))
+                    decrypted = decrypt(encr_blocks, self.secret_key, self.server_public_key_n)
 
-            for client in self.clients:
-                if client != c:
-                    client.send(msg)
+                    if check_message_integrity(received_hash, decrypted):
+                        print(f"[server]: Decrypted message: {decrypted}")
+                        self.broadcast(decrypted, exclude=c)
+                    else:
+                        print("[warning]: integrity check failed on server")
+
+            except Exception:
+                print("[server]: Client disconnected")
+                self.clients.remove(c)
+                break
+
+    def broadcast(self, msg: str, exclude=None):
+        """send meccage and encode"""
+        for client in self.clients:
+            if client == exclude:
+                continue
+            try:
+                public_n, public_e = self.clients_keys[client]
+                encr_blocks = encrypt(msg, public_n, public_e)
+                encr_str = ",".join(map(str, encr_blocks))
+                hashed = hash_message(msg)
+                msg_encr = encr_str + "/" + hashed
+                print(f"[debug] Sending client {self.username_lookup[client]}: {msg_encr}")
+                client.send(msg_encr.encode())
+            except Exception as e:
+                print(f"[server]: Failed to send message to {self.username_lookup.get(client, '?')}: {e}")
 
 if __name__ == "__main__":
     s = Server(6000)
