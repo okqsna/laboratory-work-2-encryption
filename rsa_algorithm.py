@@ -7,13 +7,13 @@ from secrets import randbits
 from sympy import nextprime
 
 
-
-
-def rsa_algorithm():
+def rsa_algorithm() -> dict:
     """
-    Algorithm for generation of keys
+    Algorithm for generation of public and 
+    private keys to provide message integrity.
 
-    :param num_1: int, amount of numbers from which we generate prime numbers
+    :return: dict, dictionary with public, private and euler function 
+    data needed for later communication.
     """
 
     # generation of random prime numbers with 1024 bits
@@ -33,5 +33,5 @@ def rsa_algorithm():
     # secret key generation
     d = pow(e, -1, euler_function)
 
-    return {'public_key': public_key_part_one, 'n': public_key_part_one,\
-            'secret_key_d': d, 'euler function': euler_function}
+    return {'n': public_key_part_one,\
+            'secret_key_d': d, 'euler_function': e}
