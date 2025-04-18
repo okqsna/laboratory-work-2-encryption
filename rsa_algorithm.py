@@ -16,8 +16,8 @@ def rsa_algorithm() -> dict:
     data needed for later communication.
     """
 
-    # generation of random prime numbers with 1024 bits
-    number_one, number_two = nextprime(randbits(1024)), nextprime(randbits(1024))
+    # generation of random prime numbers with 2048 bits
+    number_one, number_two = nextprime(randbits(2048)), nextprime(randbits(2048))
 
     # RSA algorithm start
     public_key_part_one = number_one * number_two
