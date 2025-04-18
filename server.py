@@ -11,21 +11,28 @@ class Server:
     """
     Class object for server
     """
-
     def __init__(self, port: int) -> None:
+        """
+        Function initializes the body of a server.
+
+        :param port: int, port to listen the server on
+        """
         self.host = '127.0.0.1'
         self.port = port
         self.clients = []
         self.clients_keys = {}
         self.username_lookup = {}
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        dct = rsa_algorithm()
-        self.server_public_key_n = dct['n']
-        self.secret_key = dct['secret_key_d']
-        self.server_public_key_e = dct['euler_function']
+        rsa = rsa_algorithm()
+        self.server_public_key_n = rsa['n']
+        self.secret_key = rsa['secret_key_d']
+        self.server_public_key_e = rsa['euler_function']
 
     def start(self):
-        """sending public keys to clients"""
+        """
+        Function connects server with users
+        by sending public keys to clients
+        """
         self.s.bind((self.host, self.port))
         self.s.listen(100)
 
@@ -33,7 +40,9 @@ class Server:
             c, _ = self.s.accept()
             username = c.recv(1024).decode()
             client_key = c.recv(2048).decode()
-            client_public_n, client_public_e = eval(client_key)
+            decoded_client_key = client_key[1:-1].split(',')
+            client_public_n = int(decoded_client_key[0].strip())
+            client_public_e = int(decoded_client_key[1].strip())
             print(f"{username} tries to connect")
             self.clients.append(c)
             self.clients_keys[c] = (client_public_n, client_public_e)
@@ -44,8 +53,14 @@ class Server:
 
             threading.Thread(target=self.handle_client, args=(c,)).start()
 
-    def handle_client(self, c):
-        """receive message and decode"""
+    def handle_client(self, c) -> str:
+        """
+        Function helps server 
+        receive message and decode them
+
+        :param c: client
+        :return: str, message for user
+        """
         while True:
             try:
                 msg = c.recv(2048).decode()
@@ -56,18 +71,24 @@ class Server:
                     decrypted = decrypt(encr_blocks, self.secret_key, self.server_public_key_n)
 
                     if check_message_integrity(received_hash, decrypted):
+                        # checking if hash of a message is the same
                         print(f"[server]: Decrypted message: {decrypted}")
                         self.broadcast(decrypted, exclude=c)
                     else:
-                        print("[warning]: integrity check failed on server")
-
+                        print("[error]: integrity check failed on server")
             except Exception:
                 print("[server]: Client disconnected")
                 self.clients.remove(c)
                 break
 
     def broadcast(self, msg: str, exclude=None):
-        """send meccage and encode"""
+        """
+        Function helps to send message and encode them.
+
+        :param msg: str, message to be send
+        :param exclude: client object, client that should not 
+        receive a message
+        """
         for client in self.clients:
             if client == exclude:
                 continue
@@ -77,10 +98,11 @@ class Server:
                 encr_str = ",".join(map(str, encr_blocks))
                 hashed = hash_message(msg)
                 msg_encr = encr_str + "/" + hashed
-                print(f"[debug] Sending client {self.username_lookup[client]}: {msg_encr}")
+                print(f"[server] Sending client {self.username_lookup[client]}: {msg_encr}")
                 client.send(msg_encr.encode())
             except Exception as e:
-                print(f"[server]: Failed to send message to {self.username_lookup.get(client, '?')}: {e}")
+                print(f"[server]: Failed to send message to {\
+                    self.username_lookup.get(client, '?')}: {e}")
 
 if __name__ == "__main__":
     s = Server(6000)
